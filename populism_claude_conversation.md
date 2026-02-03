@@ -60,71 +60,31 @@ class PopulismAnalyzer:
                 'en': ['elite', 'establishment', 'corrupt', 'oligarchy', 'out of touch',
                        'politicians', 'brussels bureaucrats', 'ruling class', 'technocrats'],
                 'fr': ['élite', 'establishment', 'corrompu', 'oligarchie', 'politiciens',
-                       'bureaucrates de bruxelles', 'classe dirigeante', 'technocrates'],
-                'de': ['Elite', 'Establishment', 'korrupt', 'Oligarchie', 'Politiker',
-                       'Brüsseler Bürokraten', 'herrschende Klasse', 'Technokraten'],
-                'nl': ['elite', 'establishment', 'corrupt', 'oligarchie', 'politici',
-                       'Brusselse bureaucraten', 'heersende klasse', 'technocraten'],
-                'es': ['élite', 'establishment', 'corrupto', 'oligarquía', 'políticos',
-                       'burócratas de bruselas', 'clase dominante', 'tecnócratas'],
-                'it': ['élite', 'establishment', 'corrotto', 'oligarchia', 'politici',
-                       'burocrati di bruxelles', 'classe dirigente', 'tecnocrati']
+                       'bureaucrates de bruxelles', 'classe dirigeante', 'technocrates']
             },
             'people_centrism': {
                 'en': ['the people', 'ordinary people', 'common man', 'silent majority',
                        'will of the people', 'people want', 'real people', 'hardworking families'],
                 'fr': ['le peuple', 'gens ordinaires', 'homme ordinaire', 'majorité silencieuse',
-                       'volonté du peuple', 'le peuple veut', 'vrais gens', 'familles qui travaillent'],
-                'de': ['das Volk', 'normale Menschen', 'einfacher Mann', 'schweigende Mehrheit',
-                       'Wille des Volkes', 'das Volk will', 'echte Menschen', 'arbeitende Familien'],
-                'nl': ['het volk', 'gewone mensen', 'gewone man', 'zwijgende meerderheid',
-                       'wil van het volk', 'het volk wil', 'echte mensen', 'werkende gezinnen'],
-                'es': ['el pueblo', 'gente ordinaria', 'hombre común', 'mayoría silenciosa',
-                       'voluntad del pueblo', 'el pueblo quiere', 'gente real', 'familias trabajadoras'],
-                'it': ['il popolo', 'gente comune', 'uomo comune', 'maggioranza silenziosa',
-                       'volontà del popolo', 'il popolo vuole', 'gente vera', 'famiglie lavoratrici']
+                       'volonté du peuple', 'le peuple veut', 'vrais gens', 'familles qui travaillent']
             },
             'us_vs_them': {
                 'en': ['us versus them', 'us against them', 'enemies of the people',
                        'betrayed', 'sold out', 'globalists', 'take back control'],
                 'fr': ['nous contre eux', 'ennemis du peuple', 'trahi', 'vendu', 
-                       'mondialistes', 'reprendre le contrôle'],
-                'de': ['wir gegen sie', 'Volksfeinde', 'verraten', 'ausverkauft', 
-                       'Globalisten', 'Kontrolle zurücknehmen'],
-                'nl': ['wij tegen hen', 'vijanden van het volk', 'verraden', 'uitverkocht', 
-                       'globalisten', 'controle terugnemen'],
-                'es': ['nosotros contra ellos', 'enemigos del pueblo', 'traicionado', 
-                       'vendido', 'globalistas', 'recuperar el control'],
-                'it': ['noi contro loro', 'nemici del popolo', 'tradito', 'venduto', 
-                       'globalisti', 'riprendere il controllo']
+                       'mondialistes', 'reprendre le contrôle']
             },
             'crisis_framing': {
                 'en': ['crisis', 'threat', 'invasion', 'disaster', 'emergency',
                        'catastrophe', 'existential threat', 'under attack'],
                 'fr': ['crise', 'menace', 'invasion', 'désastre', 'urgence',
-                       'catastrophe', 'menace existentielle', 'sous attaque'],
-                'de': ['Krise', 'Bedrohung', 'Invasion', 'Katastrophe', 'Notfall',
-                       'existenzielle Bedrohung', 'unter Angriff'],
-                'nl': ['crisis', 'bedreiging', 'invasie', 'ramp', 'noodgeval',
-                       'catastrofe', 'existentiële bedreiging', 'onder aanval'],
-                'es': ['crisis', 'amenaza', 'invasión', 'desastre', 'emergencia',
-                       'catástrofe', 'amenaza existencial', 'bajo ataque'],
-                'it': ['crisi', 'minaccia', 'invasione', 'disastro', 'emergenza',
-                       'catastrofe', 'minaccia esistenziale', 'sotto attacco']
+                       'catastrophe', 'menace existentielle', 'sous attaque']
             },
             'anti_immigration': {
                 'en': ['immigration crisis', 'illegal immigrants', 'border security',
                        'refugee crisis', 'foreign workers', 'invasion'],
                 'fr': ['crise migratoire', 'immigrés illégaux', 'sécurité des frontières',
-                       'crise des réfugiés', 'travailleurs étrangers'],
-                'de': ['Migrationskrise', 'illegale Einwanderer', 'Grenzsicherheit',
-                       'Flüchtlingskrise', 'ausländische Arbeiter'],
-                'nl': ['migratiecrisis', 'illegale immigranten', 'grensbeveiliging',
-                       'vluchtelingencrisis', 'buitenlandse werknemers'],
-                'es': ['crisis migratoria', 'inmigrantes ilegales', 'seguridad fronteriza',
-                       'crisis de refugiados', 'trabajadores extranjeros'],
-                'it': ['crisi migratoria', 'immigrati illegali', 'sicurezza delle frontiere',
-                       'crisi dei rifugiati', 'lavoratori stranieri']
+                       'crise des réfugiés', 'travailleurs étrangers']
             }
         }
     
