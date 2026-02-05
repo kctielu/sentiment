@@ -1,5 +1,76 @@
 # Populism Analysis for News Data - Conversation Summary
 
+
+## For zero-shot sentiment scoring of political ideologies in news articles, you'll want to provide carefully crafted label descriptions that are:
+
+## 1. Specific and descriptive rather than single words
+
+Instead of just "conservative" or "liberal," use fuller descriptions like:
+
+"This article expresses support for conservative political positions"
+"This article expresses support for progressive political positions"
+"This article takes a centrist or moderate political stance"
+"This article is politically neutral or factual without editorial stance"
+2. Sentiment-focused variations
+
+You could break it down further:
+
+"Positive toward conservative policies"
+"Critical of conservative policies"
+"Positive toward progressive policies"
+"Critical of progressive policies"
+3. Issue-specific if needed
+
+For more granular analysis:
+
+"Supportive of free market economics"
+"Supportive of government intervention in the economy"
+"Emphasizes individual liberty"
+"Emphasizes collective responsibility"
+Key considerations:
+
+## I'd suggest structuring your labels as natural language hypotheses that incorporate the key phrases you've identified. Here are a few approaches:
+
+# Approach 1: Direct hypothesis templates
+
+For each dimension, create statements the classifier can evaluate as true/false or score:
+
+# Anti-establishment:
+
+"This article criticizes the establishment, corrupt institutions, or the deep state"
+"This article expresses distrust of established political institutions"
+"This article portrays mainstream institutions as corrupt or illegitimate"
+# Economic nationalism:
+
+"This article advocates for protecting our economy and jobs from unfair trade"
+"This article emphasizes job protection and economic sovereignty"
+"This article criticizes trade policies as unfair to domestic workers"
+# People-centric:
+
+"This article appeals to the common man, the will of the people, or the silent majority"
+"This article frames issues as ordinary citizens versus elites"
+"This article claims to speak for overlooked or silenced populations"
+Approach 2: Scalar labels (if your classifier supports intensity)
+
+Create opposing pairs to get directional scores:
+
+"Strongly anti-establishment" vs. "Supportive of established institutions"
+"Strongly protectionist on trade" vs. "Supportive of free trade"
+"Appeals to populist sentiments" vs. "Emphasizes expert opinion"
+Approach 3: Multi-step classification
+
+First detect presence, then score intensity:
+
+Step 1: Presence detection
+
+"This article contains anti-establishment rhetoric"
+Step 2: Intensity (if present)
+
+"Mildly critical of institutions"
+"Moderately anti-establishment"
+"Strongly anti-establishment"
+
+=======================================
 ## Problem with Original Approach
 
 ### 1. Measures Political Ideology, Not Populism
