@@ -29,7 +29,7 @@ For more granular analysis:
 "Emphasizes collective responsibility"
 Key considerations:
 
-## I'd suggest structuring your labels as natural language hypotheses that incorporate the key phrases you've identified. Here are a few approaches:
+I'd suggest structuring your labels as natural language hypotheses that incorporate the key phrases you've identified. Here are a few approaches:
 
 # Approach 1: Direct hypothesis templates
 
@@ -38,26 +38,38 @@ For each dimension, create statements the classifier can evaluate as true/false 
 # Anti-establishment:
 
 "This article criticizes the establishment, corrupt institutions, or the deep state"
+
 "This article expresses distrust of established political institutions"
+
 "This article portrays mainstream institutions as corrupt or illegitimate"
+
 # Economic nationalism:
 
 "This article advocates for protecting our economy and jobs from unfair trade"
+
 "This article emphasizes job protection and economic sovereignty"
+
 "This article criticizes trade policies as unfair to domestic workers"
+
 # People-centric:
 
 "This article appeals to the common man, the will of the people, or the silent majority"
+
 "This article frames issues as ordinary citizens versus elites"
+
 "This article claims to speak for overlooked or silenced populations"
-Approach 2: Scalar labels (if your classifier supports intensity)
+
+# Approach 2: Scalar labels (if your classifier supports intensity)
 
 Create opposing pairs to get directional scores:
 
 "Strongly anti-establishment" vs. "Supportive of established institutions"
+
 "Strongly protectionist on trade" vs. "Supportive of free trade"
+
 "Appeals to populist sentiments" vs. "Emphasizes expert opinion"
-Approach 3: Multi-step classification
+
+# Approach 3: Multi-step classification
 
 First detect presence, then score intensity:
 
