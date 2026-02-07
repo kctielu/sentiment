@@ -137,7 +137,7 @@ ECONOMIC_POLITICAL_DIMENSIONS = {
             "Cet article critique la Chine comme une menace pour l'emploi français",
             "Cet article dénonce la concurrence déloyale des produits chinois",
             "Cet article exprime de la méfiance envers les investissements chinois",
-            "Cet article critique les pratiques commerciales chinoises jugées injustes",
+            "Cet article présente la Chine comme une menace pour l'indépendance économique française/européenne",
             "Cet article présente la Chine comme un concurrent économique dangereux",
             "Cet article alerte sur les risques du dumping chinois et de la contrefaçon"
         ],
