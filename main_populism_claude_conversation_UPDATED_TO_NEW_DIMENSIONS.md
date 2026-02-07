@@ -154,122 +154,24 @@ ECONOMIC_POLITICAL_DIMENSIONS = {
             "Cet article présente l'immigration comme bénéfique pour l'économie française"
         ],
         'negative_labels': [  # -1: Anti-immigration
-  Note: This version is optimized for French articles (2016-2019)
-# For multilingual support, add translations here
-DIMENSION_TRANSLATIONS_BACKUPle demande des contrôles plus stricts aux frontières",
+            "Cet article demande des contrôles plus stricts aux frontières",
             "Cet article présente l'immigration comme une menace pour l'identité nationale",
             "Cet article associe l'immigration à l'insécurité et au chômage",
             "Cet article plaide pour la réduction du nombre d'immigrants accueillis",
-            "Cet article critique les politiques d'immigration jugées trop laxistes"
+            "Cet article critique les politiques d'immigration jugées trop laxistes",
+            "Cet article exprime des préoccupations sur la capacité d'accueil de la France"
         ],
-        'neutral_label': "Cet article présente les questions d'immigration de manière objective et équilibrée
-        'neutral_label': "This article does not take a stance on popular vs. expert authority"
+        'neutral_label': "Cet article présente les questions d'immigration de manière objective et équilibrée"
     }
 }
 
-# Multilingual translations for key labels (improves accuracy)
-DIMENSION_TRANSLATIONS = {
-    'fr': {
-        'anti_establishment': {
-            'positive_labels': [
-                "Cet article critique l'establishment, les institutions corrompues ou l'État profond",
-                "Cet article exprime de la méfiance envers les institutions politiques établies",
-                "Cet article dépeint les institutions comme corrompues ou illégitimes",
-                "Cet article attaque les élites politiques ou la classe dirigeante"
-            ],
-            'negative_labels': [
-                "Cet article défend les institutions établies et leur légitimité",
-                "Cet article exprime sa confiance dans les institutions politiques",
-                "Cet article présente les institutions gouvernementales comme efficaces",
-                "Cet article soutient l'establishment politique"
-            ],
-            'neutral_label': "Cet article est neutre concernant les institutions politiques"
-        },
-        'economic_nationalism': {
-            'positive_labels': [
-                "Cet article plaide pour protéger notre économie et nos emplois",
-                "Cet article met l'accent sur la protection de l'emploi et la souveraineté économique",
-                "Cet article critique les politiques commerciales comme injustes pour les travailleurs",
-                "Cet article s'oppose à la mondialisation et aux accords de libre-échange"
-            ],
-            'negative_labels': [
-                "Cet article soutient le libre-échange et la coopération économique internationale",
-                "Cet article souligne les avantages de la mondialisation",
-                "Cet article défend les marchés ouverts et les accords commerciaux",
-                "Cet article considère le commerce international comme bénéfique"
-            ],
-            'neutral_label': "Cet article est neutre sur le commerce et la politique économique"
-        },
-        'people_centrism': {
-            'positive_labels': [
-                "Cet article fait appel au peuple, à la volonté populaire ou à la majorité silencieuse",
-                "Cet article oppose les citoyens ordinaires aux élites",
-                "Cet article prétend parler au nom des populations négligées",
-                "Cet article valorise la sagesse du peuple sur celle des experts"
-            ],
-            'negative_labels': [
-                "Cet article met l'accent sur l'expertise et les solutions technocratiques",
-                "Cet article s'en remet aux spécialistes et aux autorités établies",
-                "Cet article privilégie les politiques fondées sur des preuves",
-                "Cet article valorise l'expertise institutionnelle"
-            ],
-            'neutral_label': "Cet article ne prend pas position sur l'autorité populaire vs. experte"
-        }
-    },
-    'de': {
-        'anti_establishment': {
-            'positive_labels': [
-                "Dieser Artikel kritisiert das Establishment oder korrupte Institutionen",
-                "Dieser Artikel drückt Misstrauen gegenüber politischen Institutionen aus",
-                "Dieser Artikel stellt Institutionen als korrupt oder illegitim dar",
-                "Dieser Artikel greift politische Eliten an"
-            ],
-            'negative_labels': [
-                "Dieser Artikel verteidigt etablierte Institutionen",
-                "Dieser Artikel drückt Vertrauen in politische Institutionen aus",
-                "Dieser Artikel stellt Regierungsinstitutionen als effektiv dar",
-                "Dieser Artikel unterstützt das politische Establishment"
-            ],
-            'neutral_label': "Dieser Artikel ist neutral gegenüber politischen Institutionen"
-        },
-        'economic_nationalism': {
-            'positive_labels': [
-                "Dieser Artikel plädiert für den Schutz unserer Wirtschaft und Arbeitsplätze",
-                "Dieser Artikel betont Arbeitsschutz und wirtschaftliche Souveränität",
-                "Dieser Artikel kritisiert Handelspolitik als unfair für Arbeitnehmer",
-                "Dieser Artikel lehnt Globalisierung und Freihandel ab"
-            ],
-            'negative_labels': [
-                "Dieser Artikel unterstützt Freihandel und internationale Zusammenarbeit",
-                "Dieser Artikel betont die Vorteile der Globalisierung",
-                "Dieser Artikel befürwortet offene Märkte",
-                "Dieser Artikel sieht internationalen Handel als vorteilhaft"
-            ],
-            'neutral_label': "Dieser Artikel ist neutral zu Handel und Wirtschaftspolitik"
-        },
-        'people_centrism': {
-            'positive_labels': [
-                "Dieser Artikel appelliert an das Volk oder die schweigende Mehrheit",
-                "Dieser Artikel stellt Bürger gegen Eliten",
-                "Dieser Artikel spricht für übersehene Bevölkerungsgruppen",
-                "Dieser Artikel betont die Weisheit des Volkes über Experten"
-      EconomicPolitical
-            'neeconomic and political stance using zero-shot classification."""
-    
-    def __init__(self, model_name='MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7oritäten",
-                "Dieser Artikel bevorzugt evidenzbasierte Politik",
-                "Dieser Artikel schätzt institutionelle Expertise"
-            ],
-            'neutral_label': "Dieser Artikel nimmt keine Stellung zu Volk vs. Experten"
-        }
-    }
-}
+# Note: This version is optimized for French articles (2016-2019)
 
 
-class PopulismZeroShotAnalyzer:
-    """Analyze populism dimensions using zero-shot classification."""
+class EconomicPoliticalAnalyzer:
+    """Analyze economic and political stance using zero-shot classification."""
     
-    def __init__(self, model_name='joeddav/xlm-roberta-large-xnli', device=-1):
+    def __init__(self, model_name='MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7', device=-1):
         """
         Initialize the analyzer.
         
@@ -288,17 +190,8 @@ class PopulismZeroShotAnalyzer:
             device=device
         )
         self.model_name = model_name
-        
-    def get_labels_for_language(self, dimension: str, language: str = 'en') -> dict:
-        """Get dimension labels in the appropriate language."""
-        if language in DIMENSION_TRANSLATIONS:
-            return DIMENSION_TRANSLATIONS[language].get(
-                dimension, 
-                POPULISM_DIMENSIONS[dimension]
-            )
-        return POPULISM_DIMENSIONS[dimension]
     
-    def score_dimension(self, text: str, dimension: str, language: str = 'en') -> dict:
+    def score_dimension(self, text: str, dimension: str) -> dict:
         """
         Score a single dimension for an article.
         
@@ -310,7 +203,7 @@ class PopulismZeroShotAnalyzer:
                 - neutral_prob: probability of neutral
                 - confidence: max probability (indicates certainty)
         """
-        labels_config = self.get_labels_for_language(dimension, language)
+        labels_config = ECONOMIC_POLITICAL_DIMENSIONS[dimension]
         
         # Combine all labels for classification
         all_labels = (
@@ -376,25 +269,25 @@ class PopulismZeroShotAnalyzer:
                 'score': 0.0,
                 'positive_prob': 0.0,
                 'negative_prob': 0.0,
-                'neutral_ECONOMIC_POLITICAL.0,
+                'neutral_prob': 0.0,
                 'confidence': 0.0
             }
     
-    def analyze_article(self, text: str, language: str = 'en') -> dict:
+    def analyze_article(self, text: str) -> dict:
         """
-        Analyze all populism dimensions for an article.
+        Analyze all three economic/political dimensions for an article.
         
         Returns:
             dict with scores for each dimension plus composite score
         """
         results = {}
         
-        for dimension in POPULISM_DIMENSIONS.keys():
-            dim_result = self.score_dimension(text, dimension, language)
+        for dimension in ECONOMIC_POLITICAL_DIMENSIONS.keys():
+            dim_result = self.score_dimension(text, dimension)
             results[dimension] = dim_result
-        score (average of all dimensions)
-        dimension_scores = [results[dim]['score'] for dim in ECONOMIC_POLITICALns)
-        dimension_scores = [results[dim]['score'] for dim in POPULISM_DIMENSIONS.keys()]
+        
+        # Composite score (average of all dimensions)
+        dimension_scores = [results[dim]['score'] for dim in ECONOMIC_POLITICAL_DIMENSIONS.keys()]
         results['composite'] = {
             'score': round(np.mean(dimension_scores), 4),
             'confidence': round(np.mean([results[dim]['confidence'] for dim in ECONOMIC_POLITICAL_DIMENSIONS.keys()]), 4)
@@ -460,7 +353,7 @@ def process_database(db_path: str,
     
     for i, row in tqdm(articles.iterrows(), total=len(articles)):
         # Analyze article
-        analysis = analyzer.analyze_article(row['text'], row['language'])
+        analysis = analyzer.analyze_article(row['text'])
         
         # Flatten results
         result = {
@@ -468,7 +361,9 @@ def process_database(db_path: str,
             'nuts_code': row['nuts_code'],
             'nuts2': row['nuts_code'][:4] if row['nuts_code'] else None,
             'date': row['date'],
-            'yEconomic protectionism dimension
+            'year': pd.to_datetime(row['date']).year if row['date'] else None,
+            
+            # Economic protectionism dimension
             'protectionism_score': analysis['economic_protectionism']['score'],
             'protectionism_pos_prob': analysis['economic_protectionism']['positive_prob'],
             'protectionism_neg_prob': analysis['economic_protectionism']['negative_prob'],
@@ -487,10 +382,7 @@ def process_database(db_path: str,
             'immigration_confidence': analysis['immigration']['confidence'],
             
             # Composite score
-            'composite_scornfidence': analysis['people_centrism']['confidence'],
-            
-            # Composite score
-            'populism_composite': analysis['composite']['score'],
+            'composite_score': analysis['composite']['score'],
             'composite_confidence': analysis['composite']['confidence']
         }
         
@@ -523,10 +415,7 @@ def process_database(db_path: str,
         'protectionism_mean', 'protectionism_sd',
         'china_mean', 'china_sd',
         'immigration_mean', 'immigration_sd',
-        'composite_mean', 'compositestab_sd',
-        'econ_nat_mean', 'econ_nat_sd',
-        'people_centric_mean', 'people_centric_sd',
-        'populism_mean', 'populism_sd',
+        'composite_mean', 'composite_sd',
         'confidence_mean', 'article_count'
     ]
     
@@ -543,10 +432,8 @@ def process_database(db_path: str,
                 f"(+1=pro-China, -1=anti-China)")
     logging.info(f"   Immigration: mean={regional['immigration_mean'].mean():.3f} "
                 f"(+1=pro-immigration, -1=anti-immigration)")
-    logging.info(f"   Composite Score: mean={regional['composite_mean'].meanal['people_centric_mean'].mean():.3f}, "
-                f"sd={regional['people_centric_mean'].std():.3f}")
-    logging.info(f"   Composite populism: mean={regional['populism_mean'].mean():.3f}, "
-                f"sd={regional['populism_mean'].std():.3f}")
+    logging.info(f"   Composite Score: mean={regional['composite_mean'].mean():.3f}, "
+                f"sd={regional['composite_mean'].std():.3f}")
     
     return results_df, regional
 
@@ -626,13 +513,13 @@ french_economic_political_scores_articles.csv`
    - Ready to merge with your main dataset
 
 ### Column Descriptions
-protectionism_score` | Economic protectionism stance | -1 (anti/free trade) to +1 (pro) |
+
+| Column | Description | Range |
+|--------|-------------|-------|
+| `protectionism_score` | Economic protectionism stance | -1 (anti/free trade) to +1 (pro) |
 | `china_score` | Attitude toward China | -1 (anti-China) to +1 (pro-China) |
 | `immigration_score` | Immigration stance | -1 (anti-immigration) to +1 (pro-immigration) |
-| `composite_scor | Anti-establishment sentiment | -1 (pro) to +1 (anti) |
-| `econ_nat_score` | Economic nationalism | -1 (globalist) to +1 (nationalist) |
-| `people_centric_score` | People-centrism | -1 (technocratic) to +1 (populist) |
-| `populism_composite` | Average of all three dimensions | -1 to +1 |
+| `composite_score` | Average of all three dimensions | -1 to +1 |
 | `*_confidence` | Model certainty | 0 to 1 |
 
 ---
@@ -759,20 +646,21 @@ test_results %>%
   facet_wrap(~dimension, ncol = 1) +
   labs(title = "Score Distributions for French Articles (Sample)",
        x = "Score (-1 to +1)", y = "Count
+# Compare with dictionary method (if you have one)
 dict_results <- read_csv("dict_scores.csv")
-zs_results <- read_csv("zeroshot_scores.csv")
+zs_results <- read_csv("french_economic_political_scores.csv")
 
 comparison <- dict_results %>%
   inner_join(zs_results, by = c("nuts2", "year"), suffix = c("_dict", "_zs"))
 
-# Should show positive correlation (r > 0.5)
-cor.test(comparison$populism_mean_dict, comparison$populism_mean_zs)
+# Should show positive correlation (r > 0.5) for composite scores
+cor.test(comparison$composite_mean_dict, comparison$composite_mean_zs)
 
 # Visualize
-ggplot(comparison, aes(x = populism_mean_dict, y = populism_mean_zs)) +
+ggplot(comparison, aes(x = composite_mean_dict, y = composite_mean_zs)) +
   geom_point(alpha = 0.5) +
   geom_smooth(method = "lm") +
-  labs(title = "Dictionary vs. Zero-Shot Populism Scores",
+  labs(title = "Dictionary vs. Zero-Shot Economic/Political Scores",
        x = "Dictionary Method", y = "Zero-Shot Classification")
 ```
 
