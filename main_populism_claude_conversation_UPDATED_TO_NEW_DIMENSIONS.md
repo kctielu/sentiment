@@ -4,64 +4,69 @@
 
 **How would you recommend adjusting the zero shot classification code if I want to score based on:**
 
-### 1. Anti-establishment vs. Pro-establishment (+1, 0 aka neutral, -1)
+### 1. Economic Protectionism (+1 = pro, 0 = neutral, -1 = anti)
 
-For instance, for anti-establishment:
-- "This article criticizes the establishment, corrupt institutions, or the deep state"
-- "This article expresses distrust of established political institutions"
-- "This article portrays mainstream institutions as corrupt or illegitimate"
+For instance, for pro-protectionism:
+- "This article defends protecting the national economy against foreign competition"
+- "This article criticizes free trade agreements as harmful to domestic workers"
+- "This article advocates for trade barriers and tariffs"
+- "This article denounces outsourcing and demands repatriation of jobs"
 
-### 2. Pro or anti economic nationalism (+1, 0 aka neutral, -1)
+### 2. China Stance (+1 = pro-China, 0 = neutral, -1 = anti-China)
 
-For instance, for pro economic nationalism:
-- "This article advocates for protecting our economy and jobs from unfair trade"
-- "This article emphasizes job protection and economic sovereignty"
-- "This article criticizes trade policies as unfair to domestic workers"
+For instance, for anti-China:
+- "This article criticizes China as a threat to domestic employment"
+- "This article denounces unfair competition from Chinese products"
+- "This article expresses distrust of Chinese investments"
+- "This article criticizes Chinese trade practices as unjust"
 
-### 3. People-centric or technocratic (+1, 0 aka neutral, -1)
+### 3. Immigration (+1 = pro-immigration, 0 = neutral, -1 = anti-immigration)
 
-- "This article appeals to the common man, the will of the people, or the silent majority"
-- "This article frames issues as ordinary citizens versus elites"
-- "This article claims to speak for overlooked or silenced populations"
+For instance, for pro-immigration:
+- "This article defends welcoming immigrants and refugees"
+- "This article highlights positive contributions of immigration to society"
+- "This article criticizes restrictive immigration policies as inhumane"
+- "This article values cultural diversity brought by immigration"
 
 ---
 
 ## Response
 
-Here's how to modify the zero-shot classification code to score your three populism dimensions. The key changes are:
+Here's how to modify the zero-shot classification code to score your three economic and political dimensions. The key changes are:
 
-1. **Replace political ideology dimensions** with your three populism dimensions
+1. **Replace political ideology dimensions** with economic protectionism, China stance, and immigration
 2. **Define opposing poles** for each dimension (positive/negative/neutral)
-3. **Add multilingual support** for French, German, and other languages
-4. **Calculate composite populism score** by averaging all three dimensions
+3. **Use French-specific labels** tailored for 2016-2019 news articles
+4. **Calculate composite score** by averaging all three dimensions
 5. **Output both article-level and regional aggregate scores**
 
 ### Key Improvements Over Original Code
 
 | Feature | Original | Updated |
 |---------|----------|---------|
-| **Dimensions** | Left-right ideology | 3 populism dimensions |
+| **Dimensions** | Left-right ideology | Economic protectionism, China stance, Immigration |
 | **Scoring** | Single -1 to +1 axis | -1 to +1 for each dimension |
-| **Labels** | Generic political labels | Specific populism indicators |
-| **Languages** | French only | French, German, English + fallback |
+| **Labels** | Generic political labels | Specific economic/policy indicators |
+| **Languages** | French only | French (optimized for 2016-2019) |
 | **Output** | Single score | 3 dimension scores + composite |
-| **Multilingual** | No | Yes (with translations) |
+| **Context** | Generic | Tailored for trade/migration debates |
 
 ### How It Works
 
 1. **For each dimension**, the model compares the article against:
-   - **Positive labels** (e.g., anti-establishment rhetoric) → Score: +1
-   - **Negative labels** (e.g., pro-establishment) → Score: -1
+   - **Positive labels** (e.g., pro-protectionism) → Score: +1
+   - **Negative labels** (e.g., anti-protectionism/free trade) → Score: -1
    - **Neutral label** (no clear stance) → Score: 0
 
 2. **The model calculates probabilities** for each label using zero-shot classification
 
 3. **Final score** is calculated as:
    ```
-   score = (positive_prob - negative_prob) / (positive_prob + negative_prob + neutral_prob)
+   score = positive_prob - negative_prob
    ```
+   (where probabilities are normalized: positive + negative + neutral = 1)
 
-4. **Composite score** is the average of all three dimension scores
+4. **Composite score** is the weighted average of all three dimensions (equal weights: 0.33 each)
 
 ---
 
@@ -70,14 +75,14 @@ Here's how to modify the zero-shot classification code to score your three popul
 ```python
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Populism Dimension Analysis using Zero-Shot Classification
+Economic and Political Stance Analysis for French News Articles
 
-Scores articles on three populism dimensions:
-1. Anti-establishment vs. Pro-establishment (+1 to -1)
-2. Economic nationalism vs. Globalism (+1 to -1)
-3. People-centric vs. Technocratic (+1 to -1)
+Scores articles on three dimensions using zero-shot classification:
+1. Economic Protectionism: +1 (pro-protectionism) to -1 (anti-protectionism)
+2. China Stance: +1 (pro-China) to -1 (anti-China)
+3. Immigration: +1 (pro-immigration) to -1 (anti-immigration)
 
+Designed for French news articles from 2016-2019 period
 Combined score creates a populism intensity index.
 """
 
@@ -98,53 +103,66 @@ logging.basicConfig(
 # ============================================================================
 # DIMENSION DEFINITIONS
 # ============================================================================
-
-POPULISM_DIMENSIONS = {
-    'anti_establishment': {
-        'positive_labels': [  # +1: Anti-establishment
-            "This article criticizes the establishment, corrupt institutions, or the deep state",
-            "This article expresses distrust of established political institutions",
-            "This article portrays mainstream institutions as corrupt or illegitimate",
-            "This article attacks political elites or the ruling class"
+ECONOMIC_POLITICAL_DIMENSIONS = {
+    'economic_protectionism': {
+        'positive_labels': [  # +1: Pro-protectionism
+            "Cet article défend la protection de l'économie nationale contre la concurrence étrangère",
+            "Cet article critique les accords de libre-échange comme nuisibles aux travailleurs français",
+            "Cet article plaide pour des barrières commerciales et des tarifs douaniers",
+            "Cet article prône l'achat de produits français et le soutien aux industries locales",
+            "Cet article dénonce la délocalisation et demande le rapatriement des emplois",
+            "Cet article critique la mondialisation comme une menace pour l'économie française"
         ],
-        'negative_labels': [  # -1: Pro-establishment
-            "This article defends established institutions and their legitimacy",
-            "This article expresses trust in mainstream political institutions",
-            "This article portrays government institutions as effective and trustworthy",
-            "This article supports the political establishment"
+        'negative_labels': [  # -1: Anti-protectionism / Free trade
+            "Cet article soutient le libre-échange et l'ouverture des marchés internationaux",
+            "Cet article défend les accords commerciaux comme bénéfiques pour l'économie",
+            "Cet article critique le protectionnisme comme inefficace et coûteux",
+            "Cet article promeut la compétitivité internationale et l'exportation",
+            "Cet article valorise l'intégration dans l'économie mondiale",
+            "Cet article présente la mondialisation comme une opportunité économique"
         ],
-        'neutral_label': "This article is neutral about political institutions"
+        'neutral_label': "Cet article présente de manière neutre les politiques commerciales sans prendre position"
     },
     
-    'economic_nationalism': {
-        'positive_labels': [  # +1: Economic nationalism
-            "This article advocates for protecting our economy and jobs from unfair trade",
-            "This article emphasizes job protection and economic sovereignty",
-            "This article criticizes trade policies as unfair to domestic workers",
-            "This article opposes globalization and free trade agreements"
+    'china_stance': {
+        'positive_labels': [  # +1: Pro-China
+            "Cet article présente la Chine comme un partenaire commercial important et fiable",
+            "Cet article valorise les investissements chinois en France",
+            "Cet article défend la coopération économique avec la Chine",
+            "Cet article décrit positivement les relations franco-chinoises",
+            "Cet article présente la Chine comme une opportunité de croissance économique",
+            "Cet article minimise les risques associés au commerce avec la Chine"
         ],
-        'negative_labels': [  # -1: Globalism/Free trade
-            "This article supports free trade and international economic cooperation",
-            "This article emphasizes benefits of globalization",
-            "This article advocates for open markets and trade agreements",
-            "This article views international trade as beneficial"
+        'negative_labels': [  # -1: Anti-China
+            "Cet article critique la Chine comme une menace pour l'emploi français",
+            "Cet article dénonce la concurrence déloyale des produits chinois",
+            "Cet article exprime de la méfiance envers les investissements chinois",
+            "Cet article critique les pratiques commerciales chinoises jugées injustes",
+            "Cet article présente la Chine comme un concurrent économique dangereux",
+            "Cet article alerte sur les risques du dumping chinois et de la contrefaçon"
         ],
-        'neutral_label': "This article is neutral about trade and economic policy"
+        'neutral_label': "Cet article présente la Chine de manière factuelle sans jugement positif ou négatif"
     },
     
-    'people_centrism': {
-        'positive_labels': [  # +1: People-centric/populist
-            "This article appeals to the common man, the will of the people, or the silent majority",
-            "This article frames issues as ordinary citizens versus elites",
-            "This article claims to speak for overlooked or silenced populations",
-            "This article emphasizes the wisdom of ordinary people over experts"
+    'immigration': {
+        'positive_labels': [  # +1: Pro-immigration
+            "Cet article défend l'accueil des immigrants et réfugiés en France",
+            "Cet article souligne les contributions positives de l'immigration à la société",
+            "Cet article critique les politiques restrictives d'immigration comme inhumaines",
+            "Cet article valorise la diversité culturelle apportée par l'immigration",
+            "Cet article plaide pour une politique d'accueil plus généreuse",
+            "Cet article présente l'immigration comme bénéfique pour l'économie française"
         ],
-        'negative_labels': [  # -1: Technocratic/expert-driven
-            "This article emphasizes expert knowledge and technocratic solutions",
-            "This article defers to specialists and established authorities",
-            "This article prioritizes evidence-based policy over popular opinion",
-            "This article values institutional expertise over popular sentiment"
+        'negative_labels': [  # -1: Anti-immigration
+  Note: This version is optimized for French articles (2016-2019)
+# For multilingual support, add translations here
+DIMENSION_TRANSLATIONS_BACKUPle demande des contrôles plus stricts aux frontières",
+            "Cet article présente l'immigration comme une menace pour l'identité nationale",
+            "Cet article associe l'immigration à l'insécurité et au chômage",
+            "Cet article plaide pour la réduction du nombre d'immigrants accueillis",
+            "Cet article critique les politiques d'immigration jugées trop laxistes"
         ],
+        'neutral_label': "Cet article présente les questions d'immigration de manière objective et équilibrée
         'neutral_label': "This article does not take a stance on popular vs. expert authority"
     }
 }
@@ -235,10 +253,10 @@ DIMENSION_TRANSLATIONS = {
                 "Dieser Artikel stellt Bürger gegen Eliten",
                 "Dieser Artikel spricht für übersehene Bevölkerungsgruppen",
                 "Dieser Artikel betont die Weisheit des Volkes über Experten"
-            ],
-            'negative_labels': [
-                "Dieser Artikel betont Expertenwissen und technokratische Lösungen",
-                "Dieser Artikel vertraut auf Spezialisten und Autoritäten",
+      EconomicPolitical
+            'neeconomic and political stance using zero-shot classification."""
+    
+    def __init__(self, model_name='MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7oritäten",
                 "Dieser Artikel bevorzugt evidenzbasierte Politik",
                 "Dieser Artikel schätzt institutionelle Expertise"
             ],
@@ -358,7 +376,7 @@ class PopulismZeroShotAnalyzer:
                 'score': 0.0,
                 'positive_prob': 0.0,
                 'negative_prob': 0.0,
-                'neutral_prob': 1.0,
+                'neutral_ECONOMIC_POLITICAL.0,
                 'confidence': 0.0
             }
     
@@ -374,20 +392,20 @@ class PopulismZeroShotAnalyzer:
         for dimension in POPULISM_DIMENSIONS.keys():
             dim_result = self.score_dimension(text, dimension, language)
             results[dimension] = dim_result
-        
-        # Calculate composite populism score (average of all dimensions)
+        score (average of all dimensions)
+        dimension_scores = [results[dim]['score'] for dim in ECONOMIC_POLITICALns)
         dimension_scores = [results[dim]['score'] for dim in POPULISM_DIMENSIONS.keys()]
         results['composite'] = {
             'score': round(np.mean(dimension_scores), 4),
-            'confidence': round(np.mean([results[dim]['confidence'] for dim in POPULISM_DIMENSIONS.keys()]), 4)
+            'confidence': round(np.mean([results[dim]['confidence'] for dim in ECONOMIC_POLITICAL_DIMENSIONS.keys()]), 4)
         }
         
         return results
 
 
 def process_database(db_path: str, 
-                     output_csv: str = 'populism_zeroshot_scores.csv',
-                     model_name: str = 'joeddav/xlm-roberta-large-xnli',
+                     output_csv: str = 'french_economic_political_scores.csv',
+                     model_name: str = 'MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7',
                      sample_size: int = None,
                      batch_size: int = 100):
     """
@@ -401,11 +419,11 @@ def process_database(db_path: str,
         batch_size: Save progress every N articles
     """
     logging.info("=" * 70)
-    logging.info("🗳️  Populism Zero-Shot Classification")
+    logging.info("🇫🇷  French Economic & Political Stance Analysis (2016-2019)")
     logging.info("=" * 70)
     
     # Initialize analyzer
-    analyzer = PopulismZeroShotAnalyzer(model_name=model_name)
+    analyzer = EconomicPoliticalAnalyzer(model_name=model_name)
     
     # Connect to database
     conn = sqlite3.connect(db_path)
@@ -434,7 +452,10 @@ def process_database(db_path: str,
     logging.info(f"   Languages: {articles['language'].value_counts().to_dict()}")
     
     # Process articles
-    logging.info("\n🔍 Analyzing populism dimensions...")
+    logging.info("\n🔍 Analyzing three dimensions:")
+    logging.info("   1. Economic Protectionism")
+    logging.info("   2. China Stance")
+    logging.info("   3. Immigration")
     results = []
     
     for i, row in tqdm(articles.iterrows(), total=len(articles)):
@@ -447,26 +468,26 @@ def process_database(db_path: str,
             'nuts_code': row['nuts_code'],
             'nuts2': row['nuts_code'][:4] if row['nuts_code'] else None,
             'date': row['date'],
-            'year': pd.to_datetime(row['date']).year if row['date'] else None,
-            'language': row['language'],
+            'yEconomic protectionism dimension
+            'protectionism_score': analysis['economic_protectionism']['score'],
+            'protectionism_pos_prob': analysis['economic_protectionism']['positive_prob'],
+            'protectionism_neg_prob': analysis['economic_protectionism']['negative_prob'],
+            'protectionism_confidence': analysis['economic_protectionism']['confidence'],
             
-            # Anti-establishment dimension
-            'anti_estab_score': analysis['anti_establishment']['score'],
-            'anti_estab_pos_prob': analysis['anti_establishment']['positive_prob'],
-            'anti_estab_neg_prob': analysis['anti_establishment']['negative_prob'],
-            'anti_estab_confidence': analysis['anti_establishment']['confidence'],
+            # China stance dimension
+            'china_score': analysis['china_stance']['score'],
+            'china_pos_prob': analysis['china_stance']['positive_prob'],
+            'china_neg_prob': analysis['china_stance']['negative_prob'],
+            'china_confidence': analysis['china_stance']['confidence'],
             
-            # Economic nationalism dimension
-            'econ_nat_score': analysis['economic_nationalism']['score'],
-            'econ_nat_pos_prob': analysis['economic_nationalism']['positive_prob'],
-            'econ_nat_neg_prob': analysis['economic_nationalism']['negative_prob'],
-            'econ_nat_confidence': analysis['economic_nationalism']['confidence'],
+            # Immigration dimension
+            'immigration_score': analysis['immigration']['score'],
+            'immigration_pos_prob': analysis['immigration']['positive_prob'],
+            'immigration_neg_prob': analysis['immigration']['negative_prob'],
+            'immigration_confidence': analysis['immigration']['confidence'],
             
-            # People-centrism dimension
-            'people_centric_score': analysis['people_centrism']['score'],
-            'people_centric_pos_prob': analysis['people_centrism']['positive_prob'],
-            'people_centric_neg_prob': analysis['people_centrism']['negative_prob'],
-            'people_centric_confidence': analysis['people_centrism']['confidence'],
+            # Composite score
+            'composite_scornfidence': analysis['people_centrism']['confidence'],
             
             # Composite score
             'populism_composite': analysis['composite']['score'],
@@ -488,13 +509,10 @@ def process_database(db_path: str,
     logging.info(f"\n💾 Saved article-level results to: {output_csv.replace('.csv', '_articles.csv')}")
     
     # Aggregate to NUTS2-year level
-    logging.info("\n📊 Aggregating to NUTS2-year level...")
-    
-    regional = results_df.groupby(['nuts2', 'year']).agg({
-        'anti_estab_score': ['mean', 'std'],
-        'econ_nat_score': ['mean', 'std'],
-        'people_centric_score': ['mean', 'std'],
-        'populism_composite': ['mean', 'std'],
+    loggiprotectionism_score': ['mean', 'std'],
+        'china_score': ['mean', 'std'],
+        'immigration_score': ['mean', 'std'],
+        'composite_score': ['mean', 'std'],
         'composite_confidence': 'mean',
         'article_id': 'count'
     }).reset_index()
@@ -502,7 +520,10 @@ def process_database(db_path: str,
     # Flatten column names
     regional.columns = [
         'nuts2', 'year',
-        'anti_estab_mean', 'anti_estab_sd',
+        'protectionism_mean', 'protectionism_sd',
+        'china_mean', 'china_sd',
+        'immigration_mean', 'immigration_sd',
+        'composite_mean', 'compositestab_sd',
         'econ_nat_mean', 'econ_nat_sd',
         'people_centric_mean', 'people_centric_sd',
         'populism_mean', 'populism_sd',
@@ -516,14 +537,13 @@ def process_database(db_path: str,
     logging.info(f"\n✅ Saved regional results to: {output_csv}")
     logging.info(f"   Regions: {regional['nuts2'].nunique()}")
     logging.info(f"   Years: {regional['year'].min()}-{regional['year'].max()}")
-    logging.info(f"   Total articles: {regional['article_count'].sum():,}")
-    
-    logging.info("\n📈 Dimension Summaries:")
-    logging.info(f"   Anti-establishment: mean={regional['anti_estab_mean'].mean():.3f}, "
-                f"sd={regional['anti_estab_mean'].std():.3f}")
-    logging.info(f"   Economic nationalism: mean={regional['econ_nat_mean'].mean():.3f}, "
-                f"sd={regional['econ_nat_mean'].std():.3f}")
-    logging.info(f"   People-centrism: mean={regional['people_centric_mean'].mean():.3f}, "
+    logging.info(f"   Economic Protectionism: mean={regional['protectionism_mean'].mean():.3f} "
+                f"(+1=pro, -1=anti)")
+    logging.info(f"   China Stance: mean={regional['china_mean'].mean():.3f} "
+                f"(+1=pro-China, -1=anti-China)")
+    logging.info(f"   Immigration: mean={regional['immigration_mean'].mean():.3f} "
+                f"(+1=pro-immigration, -1=anti-immigration)")
+    logging.info(f"   Composite Score: mean={regional['composite_mean'].meanal['people_centric_mean'].mean():.3f}, "
                 f"sd={regional['people_centric_mean'].std():.3f}")
     logging.info(f"   Composite populism: mean={regional['populism_mean'].mean():.3f}, "
                 f"sd={regional['populism_mean'].std():.3f}")
@@ -537,29 +557,30 @@ def process_database(db_path: str,
 
 if __name__ == "__main__":
     import sys
-    
-    if len(sys.argv) < 2:
-        print("Populism Zero-Shot Classification")
+    French Economic & Political Stance Analysis (2016-2019)")
         print("=" * 70)
         print("\nUsage:")
-        print("  python populism_zeroshot.py <db_path> [output.csv] [--sample N]")
+        print("  python french_stance_analysis.py <db_path> [output.csv] [--sample N]")
         print("\nExamples:")
-        print("  python populism_zeroshot.py news_data.db")
-        print("  python populism_zeroshot.py news_data.db results.csv --sample 1000")
-        print("\nModels (set MODEL env var):")
-        print("  - joeddav/xlm-roberta-large-xnli (multilingual, recommended)")
-        print("  - facebook/bart-large-mnli (English only, most accurate)")
+        print("  python french_stance_analysis.py news_data.db")
+        print("  python french_stance_analysis.py news_data.db results.csv --sample 500")
+        print("\nDimensions analyzed:")
+        print("  1. Economic Protectionism (+1=pro, -1=anti)")
+        print("  2. China Stance (+1=pro-China, -1=anti-China)")
+        print("  3. Immigration (+1=pro-immigration, -1=anti-immigration)")
         sys.exit(1)
     
+    db_path = sys.argv[1]
+    output = sys.argv[2] if len(sys.argv) > 2 and not sys.argv[2].startswith('--') else 'french_economic_political
     db_path = sys.argv[1]
     output = sys.argv[2] if len(sys.argv) > 2 and not sys.argv[2].startswith('--') else 'populism_zeroshot_scores.csv'
     
     # Check for sample flag
     sample_size = None
     if '--sample' in sys.argv:
-        idx = sys.argv.index('--sample')
-        sample_size = int(sys.argv[idx + 1])
-    
+        idx = sys.argv.index('--sample') (optimized for French)
+    import os
+    model_name = os.environ.get('MODEL', 'MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7
     # Get model from environment or use default
     import os
     model_name = os.environ.get('MODEL', 'joeddav/xlm-roberta-large-xnli')
@@ -577,27 +598,27 @@ if __name__ == "__main__":
 
 ## How to Use
 
-### Basic Usage
+### Basic Us100 articles (recommended first run)
+python french_stance_analysis.py news_data.db test_results.csv --sample 100
 
-```bash
-# Test with 500 articles (recommended first run)
-python populism_zeroshot.py news_data.db results.csv --sample 500
+# Full analysis for French articles (will take hours)
+python french_stance_analysis.py news_data.db french_scores.csv
 
-# Full analysis (will take hours)
-python populism_zeroshot.py news_data.db populism_scores.csv
+# Use faster model for testing
+MODEL=MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7 python french_stance_analysiss.csv
 
 # Use specific model
 MODEL=facebook/bart-large-mnli python populism_zeroshot.py news_data.db
 ```
 
 ### Output Files
-
-The script creates two CSV files:
-
-1. **Article-level**: `populism_zeroshot_scores_articles.csv`
+french_economic_political_scores_articles.csv`
    - One row per article
    - Scores for all 3 dimensions + composite
    - Probabilities and confidence scores
+
+2. **Regional aggregates**: `french_economic_political_scores.csv`
+   - One row per NUTS2-year combination (for French regions)s
 
 2. **Regional aggregates**: `populism_zeroshot_scores.csv`
    - One row per NUTS2-year combination
@@ -605,10 +626,10 @@ The script creates two CSV files:
    - Ready to merge with your main dataset
 
 ### Column Descriptions
-
-| Column | Description | Range |
-|--------|-------------|-------|
-| `anti_estab_score` | Anti-establishment sentiment | -1 (pro) to +1 (anti) |
+protectionism_score` | Economic protectionism stance | -1 (anti/free trade) to +1 (pro) |
+| `china_score` | Attitude toward China | -1 (anti-China) to +1 (pro-China) |
+| `immigration_score` | Immigration stance | -1 (anti-immigration) to +1 (pro-immigration) |
+| `composite_scor | Anti-establishment sentiment | -1 (pro) to +1 (anti) |
 | `econ_nat_score` | Economic nationalism | -1 (globalist) to +1 (nationalist) |
 | `people_centric_score` | People-centrism | -1 (technocratic) to +1 (populist) |
 | `populism_composite` | Average of all three dimensions | -1 to +1 |
@@ -619,60 +640,72 @@ The script creates two CSV files:
 ## Integration with R
 
 ```r
-library(tidyverse)
-library(lfe)
-library(fixest)
+library(modelsummary)
 
-# Load populism scores
-populism_zs <- read_csv("populism_zeroshot_scores.csv")
+# Load French stance scores
+french_scores <- read_csv("french_economic_political_scores.csv")
 
-# Merge with main dataset
+# Merge with main dataset (filter for French regions)
 final_data <- final_clean %>%
-  left_join(populism_zs, by = c("nuts2", "year"))
+  filter(country == "FR") %>%  # France only
+  left_join(french_scores, by = c("nuts2", "year"))
 
 # Check data
-summary(final_data$populism_mean)
-summary(final_data$anti_estab_mean)
+summary(final_data$composite_mean)
+summary(final_data$protectionism_mean)
+summary(final_data$china_mean)
+summary(final_data$immigration_mean)
 
 # Run regressions for each dimension
-model_anti_estab <- felm(
-  anti_estab_mean ~ OLSimportshock_USD | nuts2 + country:year | 0 | nuts2,
+model_protectionism <- felm(
+  protectionism_mean ~ OLSimportshock_USD | nuts2 + year | 0 | nuts2,
   data = final_data
 )
 
-model_econ_nat <- felm(
-  econ_nat_mean ~ OLSimportshock_USD | nuts2 + country:year | 0 | nuts2,
+model_china <- felm(
+  china_mean ~ OLSimportshock_USD | nuts2 + year | 0 | nuts2,
   data = final_data
 )
 
-model_people <- felm(
-  people_centric_mean ~ OLSimportshock_USD | nuts2 + country:year | 0 | nuts2,
+model_immigration <- felm(
+  immigration_mean ~ OLSimportshock_USD | nuts2 + year | 0 | nuts2,
   data = final_data
 )
 
 model_composite <- felm(
-  populism_mean ~ OLSimportshock_USD | nuts2 + country:year | 0 | nuts2,
+  composite_mean ~ OLSimportshock_USD | nuts2 + year | 0 | nuts2,
   data = final_data
 )
 
 # Create comparison table
 modelsummary(
   list(
-    "Anti-Establishment" = model_anti_estab,
-    "Economic Nationalism" = model_econ_nat,
-    "People-Centrism" = model_people,
-    "Composite Populism" = model_composite
+    "Protectionism" = model_protectionism,
+    "China Stance" = model_china,
+    "Immigration" = model_immigration,
+    "Composite" = model_composite
   ),
   stars = c('*' = 0.1, '**' = 0.05, '***' = 0.01),
-  coef_rename = c('OLSimportshock_USD' = 'Import Shock'),
+  coef_rename = c('OLSimportshock_USD' = 'Import Shock (kUSD per worker)'),
   gof_map = c("nobs", "r.squared", "adj.r.squared"),
-  output = "populism_dimensions_regression.tex"
+  output = "french_dimensions_regression.tex",
+  title = "Impact of Import Shock on French News Discourse (2016-2019)",
+  notes = list(
+    "Dependent variables: Regional-year average stance scores from French news articles.",
+    "Higher scores indicate: pro-protectionism, pro-China, pro-immigration.",
+    "Standard errors clustered at NUTS-2 region level.",
+    "* p < 0.1, ** p < 0.05, *** p < 0.01"
+  )
 )
 
 # Visualize dimension correlations
 dimension_cors <- final_data %>%
-  select(anti_estab_mean, econ_nat_mean, people_centric_mean) %>%
+  select(protectionism_mean, china_mean, immigration_mean) %>%
   cor(use = "complete.obs")
+
+library(corrplot)
+corrplot(dimension_cors, method = "number", type = "upper",
+         title = "Correlations Between French News Discourse Dimensions
 
 library(corrplot)
 corrplot(dimension_cors, method = "number", type = "upper")
@@ -680,9 +713,9 @@ corrplot(dimension_cors, method = "number", type = "upper")
 
 ---
 
-## Performance Considerations
-
-### Speed Estimates
+## MoritzLaurer/mDeBERTa-v3-base-xnli` | 100+ | Fast | Good | French articles (recommended) |
+| `joeddav/xlm-roberta-large-xnli` | 100+ | Medium | High | Higher accuracy (slower) |
+| `facebook/bart-large-mnli` | English | Fast | Highest | English only (not for French)
 
 | Articles | CPU Time | GPU Time | Cost |
 |----------|----------|----------|------|
@@ -695,31 +728,37 @@ corrplot(dimension_cors, method = "number", type = "upper")
 
 | Model | Languages | Speed | Accuracy | Best For |
 |-------|-----------|-------|----------|----------|
-| `joeddav/xlm-roberta-large-xnli` | 100+ | Medium | High | Your thesis (multilingual) |
-| `facebook/bart-large-mnli` | English | Fast | Highest | English-only datasets |
-| `MoritzLaurer/mDeBERTa-v3-base-xnli` | 100+ | Fastest | Good | Quick testing |
-
-### Tips for Speed
-
-1. **Start with a sample**: Test with `--sample 500` first
-2. **Use GPU**: Google Colab offers free GPU (12 hours/day)
-3. **Process in chunks**: Script saves progress every 100 articles
-4. **Consider parallel processing**: Split by country/year
-
----
-
-## Validation
-
-Compare with dictionary method to ensure results make sense:
+Test the analysis on a sample before running on all French articles:
 
 ```bash
-# Run both methods
-python populism_dictionary.py news_data.db dict_scores.csv
-python populism_zeroshot.py news_data.db zeroshot_scores.csv --sample 5000
+# Test with 100 articles
+python french_stance_analysis.py news_data.db test_results.csv --sample 100
+
+# Check the results
+head test_results.csv
 ```
 
 ```r
-# Compare results
+# Validate results make sense
+library(tidyverse)
+
+# Load test results
+test_results <- read_csv("test_results_articles.csv")
+
+# Check distributions
+summary(test_results$protectionism_score)
+summary(test_results$china_score)
+summary(test_results$immigration_score)
+
+# Visualize
+test_results %>%
+  select(protectionism_score, china_score, immigration_score) %>%
+  pivot_longer(everything(), names_to = "dimension", values_to = "score") %>%
+  ggplot(aes(x = score, fill = dimension)) +
+  geom_histogram(alpha = 0.6, bins = 30) +
+  facet_wrap(~dimension, ncol = 1) +
+  labs(title = "Score Distributions for French Articles (Sample)",
+       x = "Score (-1 to +1)", y = "Count
 dict_results <- read_csv("dict_scores.csv")
 zs_results <- read_csv("zeroshot_scores.csv")
 
@@ -739,14 +778,24 @@ ggplot(comparison, aes(x = populism_mean_dict, y = populism_mean_zs)) +
 
 ---
 
-## Advantages & Limitations
+## Advantages & Li for Your Thesis
 
-### Advantages ✅
+**Primary approach**: Use this zero-shot classifier for French news discourse analysis:
+1. Provides **three distinct dimensions** relevant to China trade shock
+2. **Protectionism score** directly measures trade policy attitudes
+3. **China stance** captures attitudes toward main trade partner
+4. **Immigration score** may correlate with economic anxiety
 
-- More nuanced than keyword counting
-- Captures context and implicit meaning
-- Multilingual support built-in
-- Provides confidence scores
+**Why this works for your thesis**:
+- Directly measures discourse related to trade/globalization
+- Captures regional variation in France (NUTS-2 level)
+- Time variation (2016 vs. 2019) during trade debate intensification
+- Complements vote-based populism measures
+
+**Expected findings**:
+- Regions with higher import shock → more anti-China discourse
+- Import shock → more pro-protectionism discourse
+- Possible spillover: import shock → anti-immigration discourse (if economic anxiety narrative holds)
 - No training data required
 
 ### Limitations ❌
