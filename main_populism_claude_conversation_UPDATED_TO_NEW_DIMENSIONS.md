@@ -105,63 +105,24 @@ logging.basicConfig(
 # ============================================================================
 ECONOMIC_POLITICAL_DIMENSIONS = {
     'economic_protectionism': {
-        'positive_labels': [  # +1: Pro-protectionism
-            "Cet article défend la protection de l'économie nationale contre la concurrence étrangère",
-            "Cet article critique les accords de libre-échange comme nuisibles aux travailleurs français",
-            "Cet article plaide pour des barrières commerciales et des tarifs douaniers",
-            "Cet article prône l'achat de produits français et le soutien aux industries locales",
-            "Cet article dénonce la délocalisation et demande le rapatriement des emplois",
-            "Cet article critique la mondialisation comme une menace pour l'économie française"
-        ],
-        'negative_labels': [  # -1: Anti-protectionism / Free trade
-            "Cet article soutient le libre-échange et l'ouverture des marchés internationaux",
-            "Cet article défend les accords commerciaux comme bénéfiques pour l'économie",
-            "Cet article critique le protectionnisme comme inefficace et coûteux",
-            "Cet article promeut la compétitivité internationale et l'exportation",
-            "Cet article valorise l'intégration dans l'économie mondiale",
-            "Cet article présente la mondialisation comme une opportunité économique"
-        ],
-        'neutral_label': "Cet article présente de manière neutre les politiques commerciales sans prendre position"
+        'positive_label': "Cet article défend la protection de l'économie nationale contre la concurrence étrangère",
+        # "This article defends protecting the national economy against foreign competition"
+        'negative_label': "Cet article soutient le libre-échange et l'ouverture des marchés internationaux"
+        # "This article supports free trade and opening international markets"
     },
     
     'china_stance': {
-        'positive_labels': [  # +1: Pro-China
-            "Cet article présente la Chine comme un partenaire commercial important et fiable",
-            "Cet article valorise les investissements chinois en France",
-            "Cet article défend la coopération économique avec la Chine",
-            "Cet article décrit positivement les relations franco-chinoises",
-            "Cet article présente la Chine comme une opportunité de croissance économique",
-            "Cet article minimise les risques associés au commerce avec la Chine"
-        ],
-        'negative_labels': [  # -1: Anti-China
-            "Cet article critique la Chine comme une menace pour l'emploi français",
-            "Cet article dénonce la concurrence déloyale des produits chinois",
-            "Cet article exprime de la méfiance envers les investissements chinois",
-            "Cet article présente la Chine comme une menace pour l'indépendance économique française/européenne",
-            "Cet article présente la Chine comme un concurrent économique dangereux",
-            "Cet article alerte sur les risques du dumping chinois et de la contrefaçon"
-        ],
-        'neutral_label': "Cet article présente la Chine de manière factuelle sans jugement positif ou négatif"
+        'positive_label': "Cet article présente la Chine comme un partenaire commercial important et fiable",
+        # "This article presents China as an important and reliable trade partner"
+        'negative_label': "Cet article critique la Chine comme une menace pour l'emploi français"
+        # "This article criticizes China as a threat to French employment"
     },
     
     'immigration': {
-        'positive_labels': [  # +1: Pro-immigration
-            "Cet article défend l'accueil des immigrants et réfugiés en France",
-            "Cet article souligne les contributions positives de l'immigration à la société",
-            "Cet article critique les politiques restrictives d'immigration comme inhumaines",
-            "Cet article valorise la diversité culturelle apportée par l'immigration",
-            "Cet article plaide pour une politique d'accueil plus généreuse",
-            "Cet article présente l'immigration comme bénéfique pour l'économie française"
-        ],
-        'negative_labels': [  # -1: Anti-immigration
-            "Cet article demande des contrôles plus stricts aux frontières",
-            "Cet article présente l'immigration comme une menace pour l'identité nationale",
-            "Cet article associe l'immigration à l'insécurité et au chômage",
-            "Cet article plaide pour la réduction du nombre d'immigrants accueillis",
-            "Cet article critique les politiques d'immigration jugées trop laxistes",
-            "Cet article exprime des préoccupations sur la capacité d'accueil de la France"
-        ],
-        'neutral_label': "Cet article présente les questions d'immigration de manière objective et équilibrée"
+        'positive_label': "Cet article défend l'accueil des immigrants et réfugiés en France",
+        # "This article defends welcoming immigrants and refugees in France"
+        'negative_label': "Cet article présente l'immigration comme une menace pour l'identité nationale"
+        # "This article presents immigration as a threat to national identity"
     }
 }
 
@@ -197,20 +158,18 @@ class EconomicPoliticalAnalyzer:
         
         Returns:
             dict with:
-                - score: float from -1 to +1
+                - score: -1 (negative) or +1 (positive)
                 - positive_prob: probability of positive pole
                 - negative_prob: probability of negative pole
-                - neutral_prob: probability of neutral
-                - confidence: max probability (indicates certainty)
+                - confidence: difference between probabilities (higher = more certain)
         """
         labels_config = ECONOMIC_POLITICAL_DIMENSIONS[dimension]
         
-        # Combine all labels for classification
-        all_labels = (
-            labels_config['positive_labels'] + 
-            labels_config['negative_labels'] + 
-            [labels_config['neutral_label']]
-        )
+        # Use only positive and negative labels
+        candidate_labels = [
+            labels_config['positive_label'],
+            labels_config['negative_label']
+        ]
         
         # Truncate text to model max length
         text_truncated = text[:1024]
@@ -218,58 +177,41 @@ class EconomicPoliticalAnalyzer:
         try:
             result = self.classifier(
                 text_truncated,
-                candidate_labels=all_labels,
-                multi_label=True  # Allow multiple labels to be true
+                candidate_labels=candidate_labels,
+                multi_label=False  # Force binary choice
             )
             
             # Map results back to labels
             label_scores = dict(zip(result['labels'], result['scores']))
             
-            # Calculate aggregate scores for each pole
-            positive_scores = [
-                label_scores.get(label, 0) 
-                for label in labels_config['positive_labels']
-            ]
-            negative_scores = [
-                label_scores.get(label, 0) 
-                for label in labels_config['negative_labels']
-            ]
-            neutral_score = label_scores.get(labels_config['neutral_label'], 0)
+            positive_prob = label_scores.get(labels_config['positive_label'], 0)
+            negative_prob = label_scores.get(labels_config['negative_label'], 0)
             
-            # Average probabilities for each pole
-            positive_prob = np.mean(positive_scores)
-            negative_prob = np.mean(negative_scores)
-            neutral_prob = neutral_score
-            
-            # Normalize probabilities
-            total = positive_prob + negative_prob + neutral_prob
+            # Normalize probabilities (should sum to 1)
+            total = positive_prob + negative_prob
             if total > 0:
                 positive_prob /= total
                 negative_prob /= total
-                neutral_prob /= total
             
-            # Calculate final score: +1 (positive) to -1 (negative)
-            # Neutral contributes 0
-            score = positive_prob - negative_prob
+            # Binary score: +1 if positive > negative, -1 otherwise
+            score = 1 if positive_prob > negative_prob else -1
             
-            # Confidence is the max probability (higher = more certain)
-            confidence = max(positive_prob, negative_prob, neutral_prob)
+            # Confidence is the absolute difference between probabilities
+            confidence = abs(positive_prob - negative_prob)
             
             return {
-                'score': round(score, 4),
+                'score': score,
                 'positive_prob': round(positive_prob, 4),
                 'negative_prob': round(negative_prob, 4),
-                'neutral_prob': round(neutral_prob, 4),
                 'confidence': round(confidence, 4)
             }
             
         except Exception as e:
             logging.error(f"Error scoring dimension {dimension}: {e}")
             return {
-                'score': 0.0,
-                'positive_prob': 0.0,
-                'negative_prob': 0.0,
-                'neutral_prob': 0.0,
+                'score': 0,
+                'positive_prob': 0.5,
+                'negative_prob': 0.5,
                 'confidence': 0.0
             }
     
@@ -302,7 +244,7 @@ def process_database(db_path: str,
                      sample_size: int = None,
                      batch_size: int = 100):
     """
-    Process articles from database and score populism dimensions.
+    Process articles from database and score economic/political dimensions.
     
     Args:
         db_path: Path to SQLite database
