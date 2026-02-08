@@ -114,8 +114,8 @@ ECONOMIC_POLITICAL_DIMENSIONS = {
     'china_stance': {
         'positive_label': "Cet article présente la Chine comme un partenaire commercial important et fiable",
         # "This article presents China as an important and reliable trade partner"
-        'negative_label': "Cet article critique la Chine comme une menace pour l'emploi français"
-        # "This article criticizes China as a threat to French employment"
+        'negative_label': "Cet article critique la Chine comme une menace pour l'économie ou la société       française"
+        # "This article criticizes China as a threat to the French economy or society."
     },
     
     'immigration': {
